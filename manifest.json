@@ -1,0 +1,19 @@
+{
+  "name": "NSD - Nitro Storm Drift",
+  "short_name": "NSD",
+  "description": "NSD 3D arcade racing game",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#080d18",
+  "theme_color": "#080d18",
+  "icons": [
+    {
+      "src": "./assets/images/nsd-logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600;700;800;900&family=Rajdhani:wght@500;600;700&display=swap');
+
+:root{--bg:#080d18;--panel:rgba(8,15,29,.91);--line:rgba(0,200,255,.35);--cyan:#00c8ff;--orange:#ff7a18;--white:#f5f8ff}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--white);font-family:Rajdhani,Arial,sans-serif}
+#game{position:relative;width:100%;height:100%;overflow:hidden;background:linear-gradient(#12283a,#080d18)}
+#game canvas{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:0}
+#brand{position:absolute;z-index:5;top:14px;left:16px;display:flex;align-items:center;gap:10px;pointer-events:none;text-shadow:0 2px 12px #000}
+#brand img{width:54px;height:54px;object-fit:contain;background:#000;border-radius:8px}
+#brand strong{display:block;font:900 24px Orbitron,sans-serif;letter-spacing:3px}
+#brand small{display:block;color:var(--cyan);font:700 10px Orbitron,sans-serif;letter-spacing:1.5px}
+#hud{position:absolute;z-index:4;top:16px;right:16px;display:flex;gap:8px}
+.hud-card{min-width:94px;padding:9px 13px;background:rgba(5,12,23,.78);border:1px solid var(--line);border-radius:9px;backdrop-filter:blur(8px);box-shadow:0 5px 22px #0005}
+.hud-card>small{display:block;color:#8ea8bd;font:700 10px Orbitron,sans-serif;letter-spacing:1.3px}
+.hud-card strong{display:block;margin-top:4px;font:800 20px Orbitron,sans-serif}
+.hud-card strong small{font-size:9px;color:var(--cyan)}
+#race-message{position:absolute;z-index:4;top:22%;left:50%;transform:translateX(-50%);font:800 clamp(17px,3vw,28px) Orbitron,sans-serif;letter-spacing:2px;text-align:center;text-shadow:0 3px 15px #000}
+#nitro-panel{position:absolute;z-index:4;left:50%;bottom:22px;transform:translateX(-50%);width:min(260px,45vw);display:flex;align-items:center;gap:10px;padding:9px 13px;background:#07101dcc;border:1px solid var(--line);border-radius:8px;font:700 11px Orbitron,sans-serif;letter-spacing:1px}
+.nitro-track{height:9px;flex:1;background:#263443;border-radius:20px;overflow:hidden}
+#nitro-fill{height:100%;width:100%;background:linear-gradient(90deg,#ff7a18,#ffd34d,#00c8ff);border-radius:20px;transition:width .12s}
+.panel{position:absolute;z-index:8;left:50%;top:50%;transform:translate(-50%,-50%);width:min(420px,calc(100% - 32px));padding:28px;background:var(--panel);border:1px solid var(--line);border-radius:16px;box-shadow:0 18px 65px #000b;text-align:center;backdrop-filter:blur(14px)}
+.panel h1,.panel h2{margin:4px 0 8px;font:900 clamp(22px,5vw,32px) Orbitron,sans-serif;letter-spacing:1px}
+.panel p{margin:7px 0;color:#b6c6d6}
+.eyebrow{color:var(--cyan)!important;font:700 10px Orbitron,sans-serif!important;letter-spacing:2px}
+.muted,.help{color:#9aabba!important}
+.car-preview-name{margin:18px 0 12px;color:var(--orange);font:800 18px Orbitron,sans-serif;letter-spacing:2px}
+select,button{font:700 14px Orbitron,sans-serif}
+select{width:100%;padding:13px;background:#101e30;color:#fff;border:1px solid #34536b;border-radius:8px;margin-bottom:12px}
+button{border:0;border-radius:8px;cursor:pointer;touch-action:none;user-select:none}
+.panel button{width:100%;padding:14px;margin-top:9px;letter-spacing:1px}
+.primary{background:linear-gradient(100deg,#ff6b16,#ffad28);color:#111;box-shadow:0 5px 20px #ff7a1833}
+.secondary{background:#14283a;color:#dceeff;border:1px solid #31536a}
+.help{display:block;margin-top:14px;font-size:12px}
+.hidden{display:none!important}
+#pause-button{position:absolute;z-index:6;right:16px;top:94px;width:42px;height:42px;background:#07101dcc;border:1px solid var(--line);color:white;font-size:20px}
+#mobile-controls{position:absolute;z-index:5;left:0;right:0;bottom:18px;display:flex;justify-content:space-between;align-items:end;padding:0 18px;pointer-events:none}
+#mobile-controls button{pointer-events:auto;color:white;background:#081522d9;border:1px solid #5a7890;min-width:58px;min-height:54px;box-shadow:0 4px 16px #0008}
+.steering,.driving{display:flex;gap:9px}
+.steering button{font-size:22px}
+.driving button{padding:0 13px;font-size:10px}
+.driving .brake{border-color:#ff6262;color:#ff9a9a}
+.driving .nitro{border-color:#00c8ff;color:#00d9ff}
+.driving .accelerate{background:linear-gradient(120deg,#ff6b16,#ffae29);color:#111;border:0}
+.load-error{position:absolute;z-index:20;left:12px;right:12px;bottom:12px;padding:12px;background:#5d1420;color:#fff;border:1px solid #ff6575;border-radius:8px;white-space:pre-wrap}
+@media(min-width:900px){#mobile-controls{opacity:.72}.panel{top:53%}}
+@media(max-width:600px){#brand{top:9px;left:9px}#brand img{width:39px;height:39px}#brand strong{font-size:18px}#brand small{font-size:8px}#hud{top:9px;right:8px;gap:4px}.hud-card{min-width:68px;padding:7px 8px}.hud-card>small{font-size:8px}.hud-card strong{font-size:14px}.hud-card strong small{font-size:7px}#pause-button{top:67px;right:9px;width:36px;height:36px}#race-message{top:18%}.panel{padding:22px 18px}#mobile-controls{bottom:12px;padding:0 10px}.steering,.driving{gap:6px}.steering button{min-width:49px;min-height:49px}.driving button{min-width:50px;min-height:49px;padding:0 7px;font-size:9px}#nitro-panel{bottom:75px}}
+@media(orientation:portrait) and (max-width:700px){#game:after{content:"For the best racing view, rotate your phone to landscape.";position:absolute;z-index:3;top:58px;left:50%;transform:translateX(-50%);width:90%;text-align:center;color:#d4e6f5;font-size:11px;pointer-events:none}}

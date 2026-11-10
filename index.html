@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="theme-color" content="#080d18">
+  <title>NSD — Nitro Storm Drift</title>
+  <link rel="icon" type="image/svg+xml" href="./assets/images/nsd-logo.svg">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <main id="game">
+    <div id="brand">
+      <img src="./assets/images/nsd-logo.svg" alt="NSD logo" onerror="this.style.display='none'">
+      <div><strong>NSD</strong><small>NITRO STORM DRIFT</small></div>
+    </div>
+
+    <section id="hud" aria-live="polite">
+      <div class="hud-card"><small>SPEED</small><strong><span id="speed">0</span><small> KM/H</small></strong></div>
+      <div class="hud-card"><small>DISTANCE</small><strong id="distance">0.00 KM</strong></div>
+      <div class="hud-card"><small>TIME</small><strong id="timer">00:00</strong></div>
+    </section>
+
+    <div id="race-message">READY TO RACE?</div>
+
+    <section id="nitro-panel">
+      <span>NITRO</span>
+      <div class="nitro-track"><div id="nitro-fill"></div></div>
+    </section>
+
+    <section id="garage" class="panel">
+      <p class="eyebrow">NITRO STORM DRIFT</p>
+      <h1>CHOOSE YOUR RIDE</h1>
+      <p class="muted">Pick a car and hit the road.</p>
+      <div class="car-preview-name" id="selected-car-name">STORM GT</div>
+      <select id="car-select" aria-label="Select car">
+        <option value="storm">STORM GT</option>
+        <option value="phantom">PHANTOM R</option>
+        <option value="vortex">VORTEX X</option>
+        <option value="inferno">INFERNO RS</option>
+      </select>
+      <button id="start-button" class="primary">START RACE</button>
+      <small class="help">WASD / Arrow keys · Touch controls supported</small>
+    </section>
+
+    <section id="pause-panel" class="panel hidden">
+      <p class="eyebrow">RACE CONTROL</p>
+      <h2>PAUSED</h2>
+      <button id="resume-button" class="primary">RESUME RACE</button>
+      <button id="garage-button" class="secondary">BACK TO GARAGE</button>
+    </section>
+
+    <button id="pause-button" aria-label="Pause game" title="Pause">Ⅱ</button>
+
+    <section id="mobile-controls" aria-label="Driving controls">
+      <div class="steering">
+        <button data-control="left" aria-label="Steer left">◀</button>
+        <button data-control="right" aria-label="Steer right">▶</button>
+      </div>
+      <div class="driving">
+        <button data-control="brake" class="brake">BRAKE</button>
+        <button data-control="nitro" class="nitro">NITRO</button>
+        <button data-control="accelerate" class="accelerate">GAS</button>
+      </div>
+    </section>
+    <div id="load-error" class="load-error hidden"></div>
+  </main>
+  <script type="module" src="./js/main.js"></script>
+</body>
+</html>
