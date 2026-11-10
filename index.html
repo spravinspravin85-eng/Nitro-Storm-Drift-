@@ -1,71 +1,621 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0,
+    maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+
   <meta name="theme-color" content="#080d18">
+  <meta name="screen-orientation" content="landscape">
+
   <title>NSD — Nitro Storm Drift</title>
-  <link rel="icon" type="image/svg+xml" href="./assets/images/nsd-logo.svg">
+
+  <link rel="icon" type="image/svg+xml"
+    href="./assets/images/nsd-logo.svg">
+
   <link rel="manifest" href="./manifest.json">
   <link rel="stylesheet" href="./style.css">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #05070d;
+      color: white;
+      font-family: Arial, sans-serif;
+      touch-action: manipulation;
+    }
+
+    #game {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    #brand {
+      position: absolute;
+      top: 12px;
+      left: 15px;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    #brand img {
+      width: 42px;
+      height: 42px;
+      object-fit: contain;
+    }
+
+    #brand small {
+      display: block;
+      color: #00c8ff;
+      font-size: 9px;
+    }
+
+    #hud {
+      position: absolute;
+      top: 12px;
+      right: 65px;
+      display: flex;
+      gap: 8px;
+      z-index: 20;
+    }
+
+    .hud-card {
+      min-width: 75px;
+      padding: 8px;
+      border: 1px solid #00c8ff66;
+      border-radius: 8px;
+      background: #080d18dd;
+    }
+
+    .hud-card small {
+      display: block;
+      color: #9eacc2;
+      font-size: 9px;
+    }
+
+    .hud-card strong {
+      font-size: 16px;
+    }
+
+    #race-message {
+      position: absolute;
+      top: 85px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      font-weight: bold;
+      color: #00c8ff;
+      text-align: center;
+    }
+
+    #nitro-panel {
+      position: absolute;
+      top: 95px;
+      right: 15px;
+      width: 130px;
+      z-index: 20;
+      font-size: 10px;
+    }
+
+    .nitro-track {
+      height: 8px;
+      margin-top: 5px;
+      background: #263348;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    #nitro-fill {
+      width: 100%;
+      height: 100%;
+      background: #00c8ff;
+    }
+
+    .panel {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 50;
+      width: min(90%, 430px);
+      max-height: 90%;
+      overflow-y: auto;
+      padding: 22px;
+      text-align: center;
+      background: #080d18f5;
+      border: 1px solid #00c8ff;
+      border-radius: 16px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    button, input, select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+      color: white;
+      background: #14253c;
+      border: 1px solid #00c8ff;
+      border-radius: 8px;
+      padding: 10px 14px;
+    }
+
+    button:active {
+      transform: scale(.96);
+    }
+
+    button.primary {
+      width: 100%;
+      margin-top: 12px;
+      background: #087da9;
+    }
+
+    button.secondary {
+      width: 100%;
+      margin-top: 8px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 11px;
+      margin: 6px 0;
+      color: white;
+      background: #101b2b;
+      border: 1px solid #405675;
+      border-radius: 8px;
+    }
+
+    .eyebrow {
+      color: #00c8ff;
+      font-size: 11px;
+      letter-spacing: 2px;
+    }
+
+    .muted, .help {
+      color: #9eacc2;
+      font-size: 11px;
+    }
+
+    #pause-button {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      z-index: 30;
+    }
+
+    /* Driving cockpit */
+
+    #mobile-controls {
+      position: absolute;
+      bottom: 12px;
+      left: 0;
+      right: 0;
+      z-index: 25;
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      padding: 0 3%;
+      pointer-events: none;
+    }
+
+    #mobile-controls button,
+    #steering-wheel {
+      pointer-events: auto;
+      touch-action: none;
+      user-select: none;
+    }
+
+    .steering-area,
+    .pedal-area {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      flex-direction: column;
+    }
+
+    #steering-wheel {
+      width: clamp(90px, 16vw, 145px);
+      height: clamp(90px, 16vw, 145px);
+      border: 12px solid #a8b3c5;
+      border-radius: 50%;
+      background: radial-gradient(#182337, #05080f);
+      display: grid;
+      place-items: center;
+      box-shadow: 0 0 15px #00c8ff55;
+    }
+
+    .wheel-inner {
+      width: 48%;
+      height: 48%;
+      border: 4px solid #00c8ff;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-weight: bold;
+    }
+
+    .pedal-area {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(65px, 90px));
+    }
+
+    .pedal {
+      min-height: 48px;
+      font-size: 10px;
+      font-weight: bold;
+    }
+
+    .clutch { background: #354d73; }
+    .brake { background: #a32635; }
+    .gas { background: #087a43; }
+    .nitro { background: #087fae; }
+
+    #cockpit-display {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      min-width: 140px;
+      padding: 9px;
+      background: #080d18ee;
+      border: 1px solid #00c8ff;
+      border-radius: 10px;
+      font-size: 10px;
+    }
+
+    #gear-display {
+      color: #00c8ff;
+      font-size: 25px;
+    }
+
+    .gear-buttons {
+      display: flex;
+      gap: 5px;
+    }
+
+    .gear-buttons button {
+      padding: 7px;
+      font-size: 10px;
+    }
+
+    .infotainment {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .infotainment button {
+      font-size: 9px;
+      padding: 6px;
+    }
+
+    /* Multiplayer */
+
+    #multiplayer-menu {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: min(92%, 440px);
+      max-height: 85%;
+      overflow-y: auto;
+      z-index: 60;
+      padding: 18px;
+      border: 1px solid #00c8ff;
+      border-radius: 14px;
+      background: #080d18f5;
+      text-align: center;
+    }
+
+    #multiplayer-menu h2 {
+      color: #00c8ff;
+    }
+
+    #online-status {
+      color: #00e6a0;
+      font-size: 12px;
+    }
+
+    #online-players,
+    #player-results {
+      text-align: left;
+      max-height: 130px;
+      overflow-y: auto;
+    }
+
+    #online-players button,
+    #player-results button {
+      margin-left: 8px;
+      padding: 6px;
+      font-size: 10px;
+    }
+
+    #online-players > div,
+    #player-results > div {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 7px;
+      border-bottom: 1px solid #263348;
+      font-size: 12px;
+    }
+
+    #incoming-invitation {
+      margin: 8px 0;
+      color: #00c8ff;
+    }
+
+    @media (max-height: 500px) {
+      #mobile-controls {
+        bottom: 5px;
+      }
+
+      #steering-wheel {
+        width: 85px;
+        height: 85px;
+        border-width: 9px;
+      }
+
+      #cockpit-display {
+        padding: 5px;
+        gap: 3px;
+      }
+
+      .pedal {
+        min-height: 38px;
+      }
+
+      #hud {
+        top: 5px;
+      }
+    }
+  </style>
 </head>
+
 <body>
-  <main id="game">
-    <div id="brand">
-      <img src="./assets/images/nsd-logo.svg" alt="NSD logo" onerror="this.style.display='none'">
-      <div><strong>NSD</strong><small>NITRO STORM DRIFT</small></div>
+<main id="game">
+
+  <!-- Brand -->
+  <div id="brand">
+    <img src="./assets/images/nsd-logo.svg"
+      alt="NSD logo"
+      onerror="this.style.display='none'">
+    <div>
+      <strong>NSD</strong>
+      <small>NITRO STORM DRIFT</small>
+    </div>
+  </div>
+
+  <!-- Race HUD -->
+  <section id="hud" aria-live="polite">
+    <div class="hud-card">
+      <small>SPEED</small>
+      <strong><span id="speed">0</span> KM/H</strong>
     </div>
 
-    <section id="hud" aria-live="polite">
-      <div class="hud-card"><small>SPEED</small><strong><span id="speed">0</span><small> KM/H</small></strong></div>
-      <div class="hud-card"><small>DISTANCE</small><strong id="distance">0.00 KM</strong></div>
-      <div class="hud-card"><small>TIME</small><strong id="timer">00:00</strong></div>
-    </section>
+    <div class="hud-card">
+      <small>DISTANCE</small>
+      <strong id="distance">0.00 KM</strong>
+    </div>
 
-    <div id="race-message">READY TO RACE?</div>
+    <div class="hud-card">
+      <small>TIME</small>
+      <strong id="timer">00:00</strong>
+    </div>
+  </section>
 
-    <section id="nitro-panel">
-      <span>NITRO</span>
-      <div class="nitro-track"><div id="nitro-fill"></div></div>
-    </section>
+  <div id="race-message">READY TO RACE?</div>
 
-    <section id="garage" class="panel">
-      <p class="eyebrow">NITRO STORM DRIFT</p>
-      <h1>CHOOSE YOUR RIDE</h1>
-      <p class="muted">Pick a car and hit the road.</p>
-      <div class="car-preview-name" id="selected-car-name">STORM GT</div>
-      <select id="car-select" aria-label="Select car">
-        <option value="storm">STORM GT</option>
-        <option value="phantom">PHANTOM R</option>
-        <option value="vortex">VORTEX X</option>
-        <option value="inferno">INFERNO RS</option>
-      </select>
-      <button id="start-button" class="primary">START RACE</button>
-      <small class="help">WASD / Arrow keys · Touch controls supported</small>
-    </section>
+  <section id="nitro-panel">
+    NITRO
+    <div class="nitro-track">
+      <div id="nitro-fill"></div>
+    </div>
+  </section>
 
-    <section id="pause-panel" class="panel hidden">
-      <p class="eyebrow">RACE CONTROL</p>
-      <h2>PAUSED</h2>
-      <button id="resume-button" class="primary">RESUME RACE</button>
-      <button id="garage-button" class="secondary">BACK TO GARAGE</button>
-    </section>
+  <!-- Garage -->
+  <section id="garage" class="panel">
+    <p class="eyebrow">NITRO STORM DRIFT</p>
+    <h1>CHOOSE YOUR RIDE</h1>
+    <p class="muted">Pick a car and hit the road.</p>
 
-    <button id="pause-button" aria-label="Pause game" title="Pause">Ⅱ</button>
+    <div id="selected-car-name">STORM GT</div>
 
-    <section id="mobile-controls" aria-label="Driving controls">
-      <div class="steering">
-        <button data-control="left" aria-label="Steer left">◀</button>
-        <button data-control="right" aria-label="Steer right">▶</button>
+    <select id="car-select" aria-label="Select car">
+      <option value="storm">STORM GT</option>
+      <option value="phantom">PHANTOM R</option>
+      <option value="vortex">VORTEX X</option>
+      <option value="inferno">INFERNO RS</option>
+    </select>
+
+    <button id="start-button" class="primary">
+      START RACE
+    </button>
+
+    <button id="open-multiplayer" class="secondary">
+      NSD ONLINE MULTIPLAYER
+    </button>
+
+    <small class="help">
+      WASD / Arrow keys · Touch controls supported
+    </small>
+  </section>
+
+  <!-- Pause -->
+  <section id="pause-panel" class="panel hidden">
+    <p class="eyebrow">RACE CONTROL</p>
+    <h2>PAUSED</h2>
+    <button id="resume-button" class="primary">
+      RESUME RACE
+    </button>
+    <button id="garage-button" class="secondary">
+      BACK TO GARAGE
+    </button>
+  </section>
+
+  <!-- Multiplayer -->
+  <section id="multiplayer-menu" class="hidden">
+    <h2>NSD ONLINE</h2>
+    <p class="muted">CONNECT • COMPETE • WIN</p>
+
+    <input id="online-username"
+      placeholder="Enter username"
+      maxlength="16"
+      autocomplete="off">
+
+    <button id="online-login">CONNECT</button>
+
+    <p id="online-status">Not connected</p>
+
+    <button id="quick-match">QUICK MATCH</button>
+    <button id="cancel-match">CANCEL SEARCH</button>
+
+    <hr>
+
+    <input id="search-player"
+      placeholder="Search player username"
+      maxlength="16">
+
+    <button id="search-button">SEARCH PLAYER</button>
+
+    <div id="player-results"></div>
+
+    <div id="incoming-invitation"></div>
+
+    <h3>ONLINE PLAYERS</h3>
+    <div id="online-players"></div>
+
+    <button id="close-multiplayer">CLOSE</button>
+  </section>
+
+  <!-- Pause button -->
+  <button id="pause-button"
+    aria-label="Pause game"
+    title="Pause">Ⅱ</button>
+
+  <!-- Driving cockpit -->
+  <section id="mobile-controls"
+    aria-label="Driving controls">
+
+    <div class="steering-area">
+      <div id="steering-wheel">
+        <div class="wheel-inner">NSD</div>
       </div>
-      <div class="driving">
-        <button data-control="brake" class="brake">BRAKE</button>
-        <button data-control="nitro" class="nitro">NITRO</button>
-        <button data-control="accelerate" class="accelerate">GAS</button>
+      <small>STEERING</small>
+    </div>
+
+    <div id="cockpit-display">
+      <div>GEAR</div>
+      <strong id="gear-display">N</strong>
+
+      <div>
+        ODO:
+        <strong id="odometer">0.0 KM</strong>
       </div>
-    </section>
-    <div id="load-error" class="load-error hidden"></div>
-  </main>
-  <script type="module" src="./js/main.js"></script>
+
+      <div class="infotainment">
+        <strong>NSD INFOTAINMENT</strong>
+        <span id="drive-mode">MANUAL TRANSMISSION</span>
+        <span id="radio-status">AUDIO SYSTEM READY</span>
+        <button id="radio-button" type="button">
+          AUDIO ON / OFF
+        </button>
+      </div>
+
+      <div class="gear-buttons">
+        <button data-gear="down">GEAR −</button>
+        <button data-gear="up">GEAR +</button>
+      </div>
+    </div>
+
+    <div class="pedal-area">
+      <button data-control="clutch"
+        class="pedal clutch">CLUTCH</button>
+
+      <button data-control="brake"
+        class="pedal brake">BRAKE</button>
+
+      <button data-control="accelerate"
+        class="pedal gas">ACCELERATOR</button>
+
+      <button data-control="nitro"
+        class="pedal nitro">NITRO</button>
+    </div>
+
+  </section>
+
+  <div id="load-error" class="load-error hidden"></div>
+
+</main>
+
+<!-- Existing game entry point: preserved -->
+<script type="module" src="./js/main.js"></script>
+
+<script>
+  // Open and close multiplayer panel.
+  const multiplayerMenu =
+    document.getElementById("multiplayer-menu");
+
+  document.getElementById("open-multiplayer")
+    ?.addEventListener("click", () => {
+      multiplayerMenu.classList.remove("hidden");
+    });
+
+  document.getElementById("close-multiplayer")
+    ?.addEventListener("click", () => {
+      multiplayerMenu.classList.add("hidden");
+    });
+
+  // Infotainment demo toggle.
+  let audioEnabled = false;
+
+  document.getElementById("radio-button")
+    ?.addEventListener("click", () => {
+      audioEnabled = !audioEnabled;
+
+      document.getElementById("radio-status").textContent =
+        audioEnabled ? "AUDIO SYSTEM: ON" : "AUDIO SYSTEM: OFF";
+    });
+
+  // Landscape fullscreen request.
+  async function enterLandscape() {
+    try {
+      if (!document.fullscreenElement) {
+        await document.documentElement.requestFullscreen();
+      }
+
+      if (screen.orientation?.lock) {
+        await screen.orientation.lock("landscape");
+      }
+    } catch (error) {
+      console.log("Manual landscape rotation may be required.");
+    }
+  }
+
+  document.addEventListener("pointerdown", () => {
+    enterLandscape();
+  }, { once: true });
+</script>
+
 </body>
 </html>
